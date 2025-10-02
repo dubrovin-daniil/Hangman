@@ -1,0 +1,10 @@
+Enter a letter:
+Wrong letter! Mistakes:
+Correct letter!
+Enter any key to continue...
+You won! The word you guessed is:
+You lost! The word was:
+Time spent:
+Attempts:
+Letters you used:
+Word:

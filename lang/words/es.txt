@@ -1,0 +1,10 @@
+bread
+table 
+window
+phone 
+corner 
+forge
+store
+work
+friend
+family

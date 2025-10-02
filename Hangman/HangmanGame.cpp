@@ -1,219 +1,122 @@
 #include "HangmanGame.h"
+#include <iostream>
+#include <cstdlib>
+#include "vector"
+#ifdef _WIN32
+#define CLEAR "cls"
+#else
+#define CLEAR "clear"
+#endif
 
+extern std::vector<std::string> lang;
 
-using namespace std;
-
-
-string hangmanMistakes[7] = {
-	// 0 mistakes
-	"  +---+\n"
-	"  |   |\n"
-	"      |\n"
-	"      |\n"
-	"      |\n"
-	"      |\n"
-	"=========\n",
-
-	// 1 mistakes
-	"  +---+\n"
-	"  |   |\n"
-	"  O   |\n"
-	"      |\n"
-	"      |\n"
-	"      |\n"
-	"=========\n",
-
-	// 2 mistakes
-	"  +---+\n"
-	"  |   |\n"
-	"  O   |\n"
-	"  |   |\n"
-	"      |\n"
-	"      |\n"
-	"=========\n",
-
-	// 3 mistakes
-	"  +---+\n"
-	"  |   |\n"
-	"  O   |\n"
-	" /|   |\n"
-	"      |\n"
-	"      |\n"
-	"=========\n",
-
-	// 4 mistakes
-	"  +---+\n"
-	"  |   |\n"
-	"  O   |\n"
-	" /|\\  |\n"
-	"      |\n"
-	"      |\n"
-	"=========\n",
-
-	// 5 mistakes
-	"  +---+\n"
-	"  |   |\n"
-	"  O   |\n"
-	" /|\\  |\n"
-	" /    |\n"
-	"      |\n"
-	"=========\n",
-
-	// 6 mistakes
-	"  +---+\n"
-	"  |   |\n"
-	"  O   |\n"
-	" /|\\  |\n"
-	" / \\  |\n"
-	"      |\n"
-	"=========\n"
+std::string hangmanMistakes[7] = {
+    "  +---+\n  |   |\n      |\n      |\n      |\n      |\n=========\n",
+    "  +---+\n  |   |\n  O   |\n      |\n      |\n      |\n=========\n",
+    "  +---+\n  |   |\n  O   |\n  |   |\n      |\n      |\n=========\n",
+    "  +---+\n  |   |\n  O   |\n /|   |\n      |\n      |\n=========\n",
+    "  +---+\n  |   |\n  O   |\n /|\\  |\n      |\n      |\n=========\n",
+    "  +---+\n  |   |\n  O   |\n /|\\  |\n /    |\n      |\n=========\n",
+    "  +---+\n  |   |\n  O   |\n /|\\  |\n / \\  |\n      |\n=========\n"
 };
 
-// Creates a file "words.txt" with encrypted words
 void HangmanGame::createEncryptedFile() {
-	ofstream file("words.txt");
-
-	if (!file) {
-		cout << "Error open file!" << endl;
-	}
-	else {
-		for (int i = 0; i < 10; i++) {
-			string encryptedWord = "";
-			for (int j = 0; j < words[i].length(); j++) {
-				char encrypt = words[i][j] + 3;
-				encryptedWord += encrypt;
-			}
-			file << encryptedWord << endl;
-		}
-		file.close();
-	}
+    std::ofstream file("words.txt");
+    if (!file) std::cout << lang[1] << std::endl;
+    else {
+        for (auto &w : words) {
+            std::string encrypted;
+            for (char c : w) encrypted += c + 3;
+            file << encrypted << "\n";
+        }
+        file.close();
+    }
 }
 
-// Main game logic
 void HangmanGame::play() {
-	clock_t start = clock();
+    system(CLEAR);
+    clock_t start = clock();
 
-	char letter;
-	bool trueLetter = false;
-	int mistakes = 0;
-	int attempts = 0;
-	string playerLetters = "";
-	string playerLettersAll = "";
-	int wordLength = randomWord.length();
-	char firstLetter = randomWord[0];
-	char lastLetter = randomWord[wordLength - 1];
-	
-	cout << "Word: " << firstLetter;
-	for (int i = 1; i < wordLength - 1; i++) {
-		cout << "_";
-	}
-	cout << lastLetter << endl;
+    char letter;
+    bool trueLetter = false;
+    int mistakes = 0;
+    int attempts = 0;
+    std::string playerLetters, playerLettersAll;
+    int wordLength = randomWord.length();
+    char firstLetter = randomWord[0];
+    char lastLetter = randomWord[wordLength - 1];
 
-	while (mistakes != 6) {
-		cout << hangmanMistakes[mistakes] << endl;
+    std::cout << lang[9] << firstLetter;
+    for (int i = 1; i < wordLength - 1; i++) std::cout << "_";
+    std::cout << lastLetter << std::endl;
 
-		cout << "Enter a letter: ";
-		cin >> letter;
+    while (mistakes != 6) {
+        std::cout << hangmanMistakes[mistakes];
+        std::cout << lang[0];
+        std::cin >> letter;
 
-		cout << "Word: " << firstLetter;
-		for (int i = 1; i < wordLength - 1; i++) {
-			if (randomWord[i] == letter) {
-				cout << randomWord[i];
-				trueLetter = true;
-				if (playerLetters.find(letter) == string::npos) {
-					playerLetters.append(1, letter);
-				}
-			}
-			else if (playerLetters.find(randomWord[i]) != string::npos) {
-				cout << randomWord[i];
-			}
-			else {
-				cout << "_";
-			}
-		}
-		cout << lastLetter << endl;
+        std::cout << lang[9] << firstLetter;
+        for (int i = 1; i < wordLength - 1; i++) {
+            if (randomWord[i] == letter) {
+                std::cout << randomWord[i];
+                trueLetter = true;
+                if (playerLetters.find(letter) == std::string::npos)
+                    playerLetters.append(1, letter);
+            } else if (playerLetters.find(randomWord[i]) != std::string::npos)
+                std::cout << randomWord[i];
+            else std::cout << "_";
+        }
+        std::cout << lastLetter << std::endl;
 
-		playerLettersAll.append(1, letter);
+        playerLettersAll.append(1, letter);
 
-		if (!trueLetter) {
-			mistakes++;
-			cout << "Wrong letter! Mistakes: " << mistakes << "/6" << endl;
+        if (!trueLetter) {
+            mistakes++;
+            std::cout << lang[1] << " " << mistakes << "/6" << std::endl;
+            std::cout << lang[3] << std::endl;
+            std::cin.ignore();
+            std::cin.get();
+        } else {
+            trueLetter = false;
+            std::cout << lang[2] << std::endl;
+            std::cout << lang[3] << std::endl;
+            std::cin.ignore();
+            std::cin.get();
+        }
+        attempts++;
 
-			cout << "Enter any key to continue..." << endl;
-			cin.ignore();
-			cin.get();
-		}
-		else {
-			trueLetter = false;
-			cout << "Correct letter!" << endl;
+        bool won = true;
+        for (int i = 1; i < wordLength - 1; i++)
+            if (playerLetters.find(randomWord[i]) == std::string::npos) { won = false; break; }
 
-			cout << "Enter any key to continue..." << endl;
-			cin.ignore();
-			cin.get();
-		}
-		attempts++;
+        if (won) break;
 
-		bool value = true;
-		for (int i = 1; i < wordLength - 1; i++) {
-			if (playerLetters.find(randomWord[i]) == string::npos) {
-				value = false;
-				break;
-			}
-		}
-		if (value) {
-			break;
-		}
-		system("cls");
+        system(CLEAR);
+        std::cout << lang[9] << firstLetter;
+        for (int i = 1; i < wordLength - 1; i++) {
+            if (randomWord[i] == letter) {
+                std::cout << randomWord[i];
+                if (playerLetters.find(letter) == std::string::npos)
+                    playerLetters.append(1, letter);
+            } else if (playerLetters.find(randomWord[i]) != std::string::npos)
+                std::cout << randomWord[i];
+            else std::cout << "_";
+        }
+        std::cout << lastLetter << std::endl;
+    }
 
-		cout << "Word: " << firstLetter;
-		for (int i = 1; i < wordLength - 1; i++) {
-			if (randomWord[i] == letter) {
-				cout << randomWord[i];
-				if (playerLetters.find(letter) == string::npos) {
-					playerLetters.append(1, letter);
-				}
-			}
-			else if (playerLetters.find(randomWord[i]) != string::npos) {
-				cout << randomWord[i];
-			}
-			else {
-				cout << "_";
-			}
-		}
-		cout << lastLetter << endl;
-	}
-	clock_t end = clock();
-	double timeSpent = double(end - start) / CLOCKS_PER_SEC;
+    clock_t end = clock();
+    double timeSpent = double(end - start) / CLOCKS_PER_SEC;
 
-	system("cls");
+    system(CLEAR);
+    std::cout << hangmanMistakes[mistakes] << std::endl;
 
-	if (mistakes < 6) {
-		cout << hangmanMistakes[mistakes] << endl;
+    if (mistakes < 6) std::cout << lang[4] << randomWord << std::endl;
+    else std::cout << lang[5] << randomWord << std::endl;
 
-		cout << "You won! The word you guessed is: " << randomWord << endl;
-		cout << "Time spent: " << timeSpent << " seconds" << endl;
-		cout << "Attempts: " << attempts << endl;
-		cout << "Letters you used: ";
-		for (int i = 0; i < playerLettersAll.length(); i++) {
-			cout << playerLettersAll[i] << " ";
-		}
-		cout << endl;
-	}
-	else {
-		cout << hangmanMistakes[mistakes] << endl;
-
-		cout << "You lost! The word was: " << randomWord << endl;
-		cout << "Time spent: " << timeSpent << " seconds" << endl;
-		cout << "Attempts: " << attempts << endl;
-		cout << "Letters you used: ";
-		for (int i = 0; i < playerLettersAll.length(); i++) {
-			cout << playerLettersAll[i] << " ";
-		}
-		cout << endl;
-	}
+    std::cout << lang[6] << timeSpent << " seconds" << std::endl;
+    std::cout << lang[7] << attempts << std::endl;
+    std::cout << lang[8];
+    for (char c : playerLettersAll) std::cout << c << " ";
+    std::cout << std::endl;
 }
-
-
-
-
-

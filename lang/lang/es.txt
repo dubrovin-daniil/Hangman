@@ -1,0 +1,10 @@
+Ingresa una letra:
+¡Letra incorrecta! Errores:
+¡Letra correcta!
+Presiona cualquier tecla para continuar...
+¡Ganaste! La palabra era:
+¡Perdiste! La palabra era:
+Tiempo usado:
+Intentos:
+Letras que usaste:
+Palabra:
