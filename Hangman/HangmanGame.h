@@ -1,27 +1,24 @@
-#pragma once
-#include <iostream>
+#ifndef HANGMANGAME_H
+#define HANGMANGAME_H
+
+#include <vector>
 #include <string>
 #include <ctime>
 #include <fstream>
 
-using namespace std;
-
-class HangmanGame
-{
-private:
-	// Fields
-	string words[10] = { "bread", "table", "window", "phone", "corner", "forge", "store", "work", "friend", "family" };
-	string randomWord;
+class HangmanGame {
 public:
-	// Constructor
-	HangmanGame() {
-		srand(time(nullptr));
+    HangmanGame(const std::vector<std::string> &w) : words(w) {
+        srand(time(nullptr));
+        randomWord = words[rand() % words.size()];
+    }
 
-		randomWord = words[rand() % 10];
-	}
+    void createEncryptedFile();
+    void play();
 
-	// Methods
-	void createEncryptedFile();
-	void play();
+private:
+    std::vector<std::string> words;
+    std::string randomWord;
 };
 
+#endif

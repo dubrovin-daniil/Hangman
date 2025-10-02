@@ -1,0 +1,10 @@
+cuchillo
+mesa
+ventana
+telefono 
+flor 
+cristal
+celeste
+trabajo
+amigo
+familia
