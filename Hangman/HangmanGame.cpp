@@ -1,28 +1,91 @@
 #include "HangmanGame.h"
-#include <iostream>
-#include <string>
-#include <ctime>
+
 
 using namespace std;
 
+
+string hangmanMistakes[7] = {
+	// 0 mistakes
+	"  +---+\n"
+	"  |   |\n"
+	"      |\n"
+	"      |\n"
+	"      |\n"
+	"      |\n"
+	"=========\n",
+
+	// 1 mistakes
+	"  +---+\n"
+	"  |   |\n"
+	"  O   |\n"
+	"      |\n"
+	"      |\n"
+	"      |\n"
+	"=========\n",
+
+	// 2 mistakes
+	"  +---+\n"
+	"  |   |\n"
+	"  O   |\n"
+	"  |   |\n"
+	"      |\n"
+	"      |\n"
+	"=========\n",
+
+	// 3 mistakes
+	"  +---+\n"
+	"  |   |\n"
+	"  O   |\n"
+	" /|   |\n"
+	"      |\n"
+	"      |\n"
+	"=========\n",
+
+	// 4 mistakes
+	"  +---+\n"
+	"  |   |\n"
+	"  O   |\n"
+	" /|\\  |\n"
+	"      |\n"
+	"      |\n"
+	"=========\n",
+
+	// 5 mistakes
+	"  +---+\n"
+	"  |   |\n"
+	"  O   |\n"
+	" /|\\  |\n"
+	" /    |\n"
+	"      |\n"
+	"=========\n",
+
+	// 6 mistakes
+	"  +---+\n"
+	"  |   |\n"
+	"  O   |\n"
+	" /|\\  |\n"
+	" / \\  |\n"
+	"      |\n"
+	"=========\n"
+};
+
 // Creates a file "words.txt" with encrypted words
 void HangmanGame::createEncryptedFile() {
-	FILE* file;
+	ofstream file("words.txt");
 
-	errno_t err = fopen_s(&file, "words.txt", "w");
-
-	if (err) {
+	if (!file) {
 		cout << "Error open file!" << endl;
 	}
 	else {
 		for (int i = 0; i < 10; i++) {
-			int encryptedWord;
+			string encryptedWord = "";
 			for (int j = 0; j < words[i].length(); j++) {
-				encryptedWord = (words[i][j] / 2 + words[i][j] * 3);
+				char encrypt = words[i][j] + 3;
+				encryptedWord += encrypt;
 			}
-			fprintf(file, "%d\n", encryptedWord);
+			file << encryptedWord << endl;
 		}
-		fclose(file);
+		file.close();
 	}
 }
 
@@ -39,8 +102,7 @@ void HangmanGame::play() {
 	int wordLength = randomWord.length();
 	char firstLetter = randomWord[0];
 	char lastLetter = randomWord[wordLength - 1];
-
-
+	
 	cout << "Word: " << firstLetter;
 	for (int i = 1; i < wordLength - 1; i++) {
 		cout << "_";
@@ -48,8 +110,11 @@ void HangmanGame::play() {
 	cout << lastLetter << endl;
 
 	while (mistakes != 6) {
+		cout << hangmanMistakes[mistakes] << endl;
+
 		cout << "Enter a letter: ";
 		cin >> letter;
+
 		cout << "Word: " << firstLetter;
 		for (int i = 1; i < wordLength - 1; i++) {
 			if (randomWord[i] == letter) {
@@ -73,15 +138,49 @@ void HangmanGame::play() {
 		if (!trueLetter) {
 			mistakes++;
 			cout << "Wrong letter! Mistakes: " << mistakes << "/6" << endl;
+
+			cout << "Enter any key to continue..." << endl;
+			cin.ignore();
+			cin.get();
 		}
 		else {
 			trueLetter = false;
+			cout << "Correct letter!" << endl;
+
+			cout << "Enter any key to continue..." << endl;
+			cin.ignore();
+			cin.get();
 		}
 		attempts++;
 
-		if (playerLetters.length() == wordLength - 2) {
+		bool value = true;
+		for (int i = 1; i < wordLength - 1; i++) {
+			if (playerLetters.find(randomWord[i]) == string::npos) {
+				value = false;
+				break;
+			}
+		}
+		if (value) {
 			break;
 		}
+		system("cls");
+
+		cout << "Word: " << firstLetter;
+		for (int i = 1; i < wordLength - 1; i++) {
+			if (randomWord[i] == letter) {
+				cout << randomWord[i];
+				if (playerLetters.find(letter) == string::npos) {
+					playerLetters.append(1, letter);
+				}
+			}
+			else if (playerLetters.find(randomWord[i]) != string::npos) {
+				cout << randomWord[i];
+			}
+			else {
+				cout << "_";
+			}
+		}
+		cout << lastLetter << endl;
 	}
 	clock_t end = clock();
 	double timeSpent = double(end - start) / CLOCKS_PER_SEC;
@@ -89,6 +188,8 @@ void HangmanGame::play() {
 	system("cls");
 
 	if (mistakes < 6) {
+		cout << hangmanMistakes[mistakes] << endl;
+
 		cout << "You won! The word you guessed is: " << randomWord << endl;
 		cout << "Time spent: " << timeSpent << " seconds" << endl;
 		cout << "Attempts: " << attempts << endl;
@@ -99,6 +200,8 @@ void HangmanGame::play() {
 		cout << endl;
 	}
 	else {
+		cout << hangmanMistakes[mistakes] << endl;
+
 		cout << "You lost! The word was: " << randomWord << endl;
 		cout << "Time spent: " << timeSpent << " seconds" << endl;
 		cout << "Attempts: " << attempts << endl;
