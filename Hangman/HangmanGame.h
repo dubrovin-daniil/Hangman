@@ -10,18 +10,20 @@ class HangmanGame
 {
 private:
 	// Fields
-	string words[10] = { "bread", "table", "window", "phone", "corner", "forge", "store", "work", "friend", "family" };
+	string words[10];
 	string randomWord;
 public:
 	// Constructor
 	HangmanGame() {
 		srand(time(nullptr));
 
+		decryptedWords();
 		randomWord = words[rand() % 10];
 	}
 
+
 	// Methods
-	void createEncryptedFile();
+	void decryptedWords();
 	void play();
 };
 

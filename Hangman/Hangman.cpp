@@ -6,8 +6,8 @@ using namespace std;
 
 int main()
 {
-	HangmanGame game;
+	srand(time(nullptr));
 
-	game.createEncryptedFile();
+	HangmanGame game;
 	game.play();
 }

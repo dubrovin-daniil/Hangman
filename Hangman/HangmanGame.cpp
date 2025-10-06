@@ -70,28 +70,49 @@ string hangmanMistakes[7] = {
 };
 
 // Creates a file "words.txt" with encrypted words
-void HangmanGame::createEncryptedFile() {
-	ofstream file("words.txt");
+//void HangmanGame::createEncryptedFile() {
+//	ofstream file("words.txt");
+//
+//	if (!file) {
+//		cout << "Error open file!" << endl;
+//	}
+//	else {
+//		for (int i = 0; i < 10; i++) {
+//			string encryptedWord = "";
+//			for (int j = 0; j < words[i].length(); j++) {
+//				char encrypt = words[i][j] + 3;
+//				encryptedWord += encrypt;
+//			}
+//			file << encryptedWord << endl;
+//		}
+//		file.close();
+//	}
+//}
+
+// Decrypts words from file
+void HangmanGame::decryptedWords() {
+	ifstream file("EncryptedWords.txt");
+	string line;
+	int index = 0;
 
 	if (!file) {
-		cout << "Error open file!" << endl;
+		cout << "Error opening file!" << endl;
 	}
-	else {
-		for (int i = 0; i < 10; i++) {
-			string encryptedWord = "";
-			for (int j = 0; j < words[i].length(); j++) {
-				char encrypt = words[i][j] + 3;
-				encryptedWord += encrypt;
-			}
-			file << encryptedWord << endl;
+	while (getline(file, line) && index < 10) { // Read words from file
+		string decryptedWord = "";
+		for (char letter : line) {
+			decryptedWord += letter - 3;
 		}
-		file.close();
+		words[index++] = decryptedWord;
 	}
+
+	file.close();
 }
+
 
 // Main game logic
 void HangmanGame::play() {
-	clock_t start = clock();
+	clock_t start = clock(); // Start time 
 
 	char letter;
 	bool trueLetter = false;
@@ -110,6 +131,8 @@ void HangmanGame::play() {
 	cout << lastLetter << endl;
 
 	while (mistakes != 6) {
+		trueLetter = false;
+
 		cout << hangmanMistakes[mistakes] << endl;
 
 		cout << "Enter a letter: ";
@@ -181,6 +204,12 @@ void HangmanGame::play() {
 			}
 		}
 		cout << lastLetter << endl;
+
+		cout << "Letters you used: ";
+		for (int i = 0; i < playerLettersAll.length(); i++) {
+			cout << playerLettersAll[i] << " ";
+		}
+		cout << endl;
 	}
 	clock_t end = clock();
 	double timeSpent = double(end - start) / CLOCKS_PER_SEC;
